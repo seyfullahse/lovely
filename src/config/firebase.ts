@@ -2,15 +2,23 @@ import { initializeApp } from 'firebase/app'
 import { getAuth } from 'firebase/auth'
 import { getFirestore } from 'firebase/firestore'
 
-// Firebase yapılandırması - couply-ai projesi
+const getRequiredEnv = (key: keyof ImportMetaEnv): string => {
+  const value = import.meta.env[key]
+  if (!value) {
+    throw new Error(`Eksik ortam degiskeni: ${key}. Lutfen .env dosyasini kontrol et.`)
+  }
+  return value
+}
+
+// Firebase yapılandırması - .env dosyasından okunur
 const firebaseConfig = {
-  apiKey: "AIzaSyCBoyvQvvM5sRfV9JFl-_K-1pPhJiatY28",
-  authDomain: "couply-ai.firebaseapp.com",
-  projectId: "couply-ai",
-  storageBucket: "couply-ai.firebasestorage.app",
-  messagingSenderId: "686668760204",
-  appId: "1:686668760204:web:5e008ee51844ab162667a9",
-  measurementId: "G-J0LZ1ZHZQZ"
+  apiKey: getRequiredEnv('VITE_FIREBASE_API_KEY'),
+  authDomain: getRequiredEnv('VITE_FIREBASE_AUTH_DOMAIN'),
+  projectId: getRequiredEnv('VITE_FIREBASE_PROJECT_ID'),
+  storageBucket: getRequiredEnv('VITE_FIREBASE_STORAGE_BUCKET'),
+  messagingSenderId: getRequiredEnv('VITE_FIREBASE_MESSAGING_SENDER_ID'),
+  appId: getRequiredEnv('VITE_FIREBASE_APP_ID'),
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
 }
 
 const app = initializeApp(firebaseConfig)
