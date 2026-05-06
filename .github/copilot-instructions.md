@@ -1,0 +1,8 @@
+- This is a React + Vite project with Tailwind CSS v4
+- Firebase is used for authentication and Firestore database
+- Framer Motion handles all animations
+- Use Turkish language for UI text and comments
+- Romantic/pastel theme with pink, purple, rose colors
+- Font families: 'Dancing Script' for headings, 'Quicksand' for body
+- All CRUD operations go through DataContext
+- Authentication flows go through AuthContext

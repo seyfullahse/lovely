@@ -1,0 +1,472 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+/* ─── shadcn / planora design tokens ─── */
+:root {
+  --radius: 0.75rem;
+  --background: 253 246 240;          /* cream-100 #FDF6F0 */
+  --foreground: 61 44 62;             /* soft-text #3D2C3E */
+  --card: 255 255 255;
+  --card-foreground: 61 44 62;
+  --popover: 255 255 255;
+  --popover-foreground: 61 44 62;
+  --primary: 184 160 220;             /* lilac-400 #B8A0DC */
+  --primary-foreground: 255 255 255;
+  --secondary: 250 218 221;           /* blush-200 #FADADD */
+  --secondary-foreground: 61 44 62;
+  --muted: 240 234 250;               /* #F0EAFA */
+  --muted-foreground: 138 123 142;    /* soft-muted #8A7B8E */
+  --accent: 232 223 245;              /* lilac-200 #E8DFF5 */
+  --accent-foreground: 61 44 62;
+  --destructive: 232 128 140;         /* blush-500 #E8808C */
+  --destructive-foreground: 255 255 255;
+  --border: 232 223 245;              /* lilac-200 */
+  --input: 240 236 245;               /* #F0ECF5 */
+  --ring: 184 160 220;                /* lilac-400 */
+  --spacing-modal: 1.75rem;           /* Generous modal padding */
+  --spacing-section: 1.5rem;          /* Section gaps in modals */
+}
+
+@theme {
+  --font-heading: 'Playfair Display', serif;
+  --font-body: 'Inter', sans-serif;
+  
+  --color-cream-50: #FFFDF9;
+  --color-cream-100: #FDF6F0;
+  --color-cream-200: #F9EDE2;
+  
+  --color-blush-50: #FFF5F6;
+  --color-blush-100: #FEEAEC;
+  --color-blush-200: #FADADD;
+  --color-blush-300: #F8C4C8;
+  --color-blush-400: #F2A0A8;
+  --color-blush-500: #E8808C;
+  
+  --color-lilac-50: #F8F5FD;
+  --color-lilac-100: #F0EAFA;
+  --color-lilac-200: #E8DFF5;
+  --color-lilac-300: #D4C5EB;
+  --color-lilac-400: #B8A0DC;
+  
+  --color-soft-text: #3D2C3E;
+  --color-soft-muted: #8A7B8E;
+  --color-soft-light: #B8A9BC;
+  
+  --color-status-planned: #93B5E1;
+  --color-status-done: #8ECFB0;
+  --color-status-late: #E8808C;
+  --color-status-pending: #E8C97D;
+  --color-status-cancelled: #B0AAB3;
+}
+
+/* Tailwind v4 preflight zaten box-sizing/margin/padding resetini içerir */
+
+html {
+  touch-action: manipulation;
+  -ms-touch-action: manipulation;
+  overflow-x: hidden;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--theme-bg, #FDF6F0);
+  min-height: 100vh;
+  min-height: 100dvh; /* iOS safe area */
+  color: var(--theme-fg, #3D2C3E);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  /* PWA safe area paddings */
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+}
+
+/* ─── Modal / Popup base layer ─── */
+.modal-overlay {
+  background: var(--theme-overlay, rgba(61, 44, 62, 0.35));
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.modal-card {
+  background: var(--theme-card, #FFFFFF);
+  border-radius: var(--radius);
+  box-shadow:
+    0 0 0 1px rgba(232, 223, 245, 0.12),
+    0 24px 64px -16px rgba(61, 44, 62, 0.22),
+    0 8px 20px -8px rgba(61, 44, 62, 0.08);
+}
+
+.modal-header {
+  padding: var(--spacing-modal) var(--spacing-modal) 1rem;
+}
+
+.modal-body {
+  padding: 0 var(--spacing-modal) var(--spacing-modal);
+}
+
+.modal-divider {
+  border-color: rgba(232, 223, 245, 0.2);
+}
+
+/* ─── Scrollbar ─── */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--theme-bg, #FDF6F0);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--theme-accent, #E8DFF5);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--theme-primary, #D4C5EB);
+}
+
+.romantic-gradient {
+  background: linear-gradient(135deg, #FADADD, #E8DFF5);
+  color: #3D2C3E;
+}
+
+.romantic-gradient-strong {
+  background: linear-gradient(135deg, #E8808C, #B8A0DC);
+  color: white;
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+.text-gradient {
+  background: linear-gradient(135deg, #E8808C, #B8A0DC);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(232, 128, 140, 0.2); }
+  50% { box-shadow: 0 0 40px rgba(232, 128, 140, 0.4); }
+}
+
+@keyframes heartbeat {
+  0%, 100% { transform: scale(1); }
+  14% { transform: scale(1.15); }
+  28% { transform: scale(1); }
+  42% { transform: scale(1.15); }
+  70% { transform: scale(1); }
+}
+
+@keyframes softGlow {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.8; }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 3s ease-in-out infinite;
+}
+
+.animate-heartbeat {
+  animation: heartbeat 1.8s ease-in-out infinite;
+}
+
+.animate-soft-glow {
+  animation: softGlow 3s ease-in-out infinite;
+}
+
+/* Calendar – Google Calendar-inspired overrides */
+.rbc-calendar {
+  font-family: 'Inter', sans-serif !important;
+}
+
+.rbc-event {
+  border-radius: 6px !important;
+  padding: 2px 6px !important;
+  font-size: 0.72rem !important;
+  font-weight: 500 !important;
+  line-height: 1.5 !important;
+  border: none !important;
+  box-shadow: none !important;
+  cursor: pointer !important;
+  transition: opacity 0.15s ease !important;
+}
+
+.rbc-event:hover {
+  opacity: 0.85 !important;
+}
+
+.rbc-event:focus {
+  outline: 2px solid #B8A0DC !important;
+  outline-offset: 1px !important;
+}
+
+.rbc-today {
+  background-color: rgba(184,160,220,0.06) !important;
+}
+
+.rbc-header {
+  font-weight: 600 !important;
+  color: #6E5A73 !important;
+  padding: 8px 6px !important;
+  font-size: 0.75rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.06em !important;
+  font-family: 'Inter', sans-serif !important;
+  border-bottom: 1px solid rgba(232,223,245,0.25) !important;
+  background: rgba(253,246,240,0.4) !important;
+}
+
+.rbc-month-view,
+.rbc-time-view {
+  border: 1px solid rgba(232,223,245,0.2) !important;
+  border-radius: 12px !important;
+  overflow: hidden;
+}
+
+.rbc-month-row + .rbc-month-row {
+  border-top: 1px solid rgba(232,223,245,0.15) !important;
+}
+
+.rbc-day-bg + .rbc-day-bg {
+  border-left: 1px solid rgba(232,223,245,0.12) !important;
+}
+
+.rbc-off-range-bg {
+  background: rgba(0,0,0,0.015) !important;
+}
+
+.rbc-off-range {
+  color: #D4C5EB !important;
+}
+
+/* Hücre tıklanabilirliği */
+.rbc-day-bg {
+  transition: background 0.15s ease !important;
+  cursor: pointer !important;
+}
+
+.rbc-day-bg:hover {
+  background: rgba(184,160,220,0.04) !important;
+}
+
+/* Bugün vurgulama – Google tarzı */
+.rbc-now .rbc-button-link {
+  color: #FFFFFF !important;
+  background: #B8A0DC !important;
+  border-radius: 50% !important;
+  width: 28px !important;
+  height: 28px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-weight: 700 !important;
+}
+
+/* Toolbar */
+.rbc-toolbar {
+  margin-bottom: 12px !important;
+  gap: 6px !important;
+  flex-wrap: wrap !important;
+  font-size: 0.85rem !important;
+  padding: 0 4px !important;
+}
+
+.rbc-toolbar button {
+  border-radius: 8px !important;
+  color: #6E5A73 !important;
+  font-family: 'Inter', sans-serif !important;
+  font-size: 0.8rem !important;
+  font-weight: 500 !important;
+  padding: 6px 14px !important;
+  border: 1px solid rgba(232,223,245,0.3) !important;
+  background: transparent !important;
+  transition: all 0.15s ease !important;
+  cursor: pointer !important;
+}
+
+.rbc-toolbar button:hover {
+  background: rgba(184,160,220,0.1) !important;
+  border-color: rgba(184,160,220,0.3) !important;
+  color: #3D2C3E !important;
+}
+
+.rbc-toolbar button.rbc-active {
+  background: linear-gradient(135deg, #B8A0DC, #FADADD) !important;
+  color: #FFFFFF !important;
+  border-color: transparent !important;
+  font-weight: 600 !important;
+  box-shadow: 0 2px 8px rgba(184,160,220,0.25) !important;
+}
+
+.rbc-toolbar .rbc-toolbar-label {
+  font-family: 'Playfair Display', serif !important;
+  font-weight: 600 !important;
+  font-size: 1.1rem !important;
+  color: #3D2C3E !important;
+  text-transform: capitalize !important;
+}
+
+.rbc-show-more {
+  font-size: 0.7rem !important;
+  color: #B8A0DC !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  padding: 2px 4px !important;
+  border-radius: 4px !important;
+  transition: background 0.15s ease !important;
+}
+
+.rbc-show-more:hover {
+  background: rgba(184,160,220,0.1) !important;
+}
+
+/* Popup overlay */
+.rbc-overlay {
+  border-radius: 12px !important;
+  border: 1px solid rgba(232,223,245,0.3) !important;
+  box-shadow: 0 8px 30px rgba(61,44,62,0.12) !important;
+  padding: 8px !important;
+  background: #FFFFFF !important;
+}
+
+.rbc-overlay-header {
+  font-family: 'Playfair Display', serif !important;
+  font-weight: 600 !important;
+  color: #3D2C3E !important;
+  border-bottom: 1px solid rgba(232,223,245,0.2) !important;
+  padding: 8px 12px 8px !important;
+  font-size: 0.9rem !important;
+}
+
+/* Date cell number */
+.rbc-date-cell {
+  padding: 4px 8px !important;
+  text-align: right !important;
+}
+
+.rbc-date-cell > a,
+.rbc-date-cell > button {
+  font-weight: 500 !important;
+  color: #6E5A73 !important;
+  font-size: 0.85rem !important;
+}
+
+/* Week/day time slot */
+.rbc-timeslot-group {
+  border-bottom: 1px solid rgba(232,223,245,0.1) !important;
+}
+
+.rbc-time-slot {
+  border-top: none !important;
+}
+
+.rbc-time-header-content {
+  border-left: 1px solid rgba(232,223,245,0.15) !important;
+}
+
+.rbc-time-content {
+  border-top: 1px solid rgba(232,223,245,0.2) !important;
+}
+
+.rbc-time-gutter .rbc-label {
+  font-size: 0.7rem !important;
+  color: #9A949D !important;
+  font-weight: 500 !important;
+}
+
+.rbc-current-time-indicator {
+  background-color: #E8808C !important;
+  height: 2px !important;
+}
+
+.rbc-current-time-indicator::before {
+  content: '' !important;
+  position: absolute !important;
+  left: -4px !important;
+  top: -4px !important;
+  width: 10px !important;
+  height: 10px !important;
+  border-radius: 50% !important;
+  background: #E8808C !important;
+}
+
+/* Agenda view */
+.rbc-agenda-view table.rbc-agenda-table {
+  border-radius: 12px !important;
+  overflow: hidden !important;
+  border: 1px solid rgba(232,223,245,0.2) !important;
+}
+
+.rbc-agenda-view table.rbc-agenda-table thead > tr > th {
+  background: rgba(253,246,240,0.5) !important;
+  color: #6E5A73 !important;
+  font-weight: 600 !important;
+  font-size: 0.8rem !important;
+  padding: 10px 12px !important;
+  border-bottom: 1px solid rgba(232,223,245,0.2) !important;
+}
+
+.rbc-agenda-view table.rbc-agenda-table tbody > tr > td {
+  padding: 10px 12px !important;
+  border-bottom: 1px solid rgba(232,223,245,0.1) !important;
+  font-size: 0.85rem !important;
+  color: #3D2C3E !important;
+}
+
+.rbc-agenda-date-cell {
+  font-weight: 600 !important;
+  color: #6E5A73 !important;
+}
+
+/* Calendar responsive */
+@media (max-width: 640px) {
+  .rbc-toolbar {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 8px !important;
+  }
+  .rbc-toolbar .rbc-btn-group {
+    justify-content: center !important;
+    display: flex !important;
+  }
+  .rbc-toolbar .rbc-toolbar-label {
+    text-align: center !important;
+    padding: 4px 0 !important;
+    font-size: 1rem !important;
+  }
+  .rbc-toolbar button {
+    font-size: 0.72rem !important;
+    padding: 5px 10px !important;
+  }
+  .rbc-header {
+    font-size: 0.65rem !important;
+    padding: 6px 3px !important;
+  }
+  .rbc-event {
+    font-size: 0.62rem !important;
+    padding: 1px 4px !important;
+    border-radius: 4px !important;
+  }
+  .rbc-date-cell > a,
+  .rbc-date-cell > button {
+    font-size: 0.75rem !important;
+  }
+}
